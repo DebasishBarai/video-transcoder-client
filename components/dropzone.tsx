@@ -5,7 +5,7 @@ import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
 export const Dropzone = () => {
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles: any) => {
     // Do something with the files
   }, []);
   const { getRootProps, getInputProps } = useDropzone({
