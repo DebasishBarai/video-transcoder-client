@@ -38,7 +38,7 @@ model UploadedVideo {
   transcodeFormats Format[]
   transcodeResolutions Resolution[]
 
-  transcodedVideos TranscodedVideo[]?
+  transcodedVideos TranscodedVideo[]
 
   uploadedAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -65,10 +65,9 @@ model TranscodedVideo {
 }
 
 enum Resolution {
-  480p
-  720p
-  1080p
-  //To be added more
+  p480
+  p720
+  p1080
 }
 
 enum Format {
