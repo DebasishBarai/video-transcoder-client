@@ -19,4 +19,53 @@ model Profile {
   name     String
   imageUrl String @db.Text
   email    String @db.Text
+
+  uploadedVideos UploadedVideo[]
+
+  createdAt DateTime @default(now())
+}
+
+model UploadedVideo {
+  id String @id @default(uuid())
+  title String
+  description String?
+  videoUrl String @db.Text
+
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  transcodeFormats Format[]
+  transcodeResolutions Resolution[]
+
+  transcodedVideos TranscodedVideo[]?
+
+  uploadedAt DateTime @default(now())
+}
+
+model TranscodedVideo {
+  id String @id @default(uuid())
+  title String
+  description String?
+  videoUrl String @db.Text
+  
+  format Format
+  resolution Resolution
+
+  originalVideoId String
+  originalVideo UploadedVideo @relation(fields: [originalVideoId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+enum Resolution {
+  480p
+  720p
+  1080p
+  //To be added more
+}
+
+enum Format {
+  mp4
+  webm
+  ogg
 }
