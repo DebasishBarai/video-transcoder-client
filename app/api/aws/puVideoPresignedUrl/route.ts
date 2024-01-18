@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       ContentType: `video/${fileType}`,
     });
 
-    const url = await getSignedUrl(client, command);
+    const url = await getSignedUrl(client, command, { expiresIn: 3600 });
 
     return NextResponse.json({
       putObjectPreSignedUrl: url,
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
 
   } catch (error) {
     console.log("[SERVERS_PUT_OBJECT_URL] ", error);
-    
+
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
