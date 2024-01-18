@@ -60,8 +60,10 @@ export async function POST(req: Request) {
     return NextResponse.json({
       getObjectPreSignedUrl: url,
     });
+
   } catch (error) {
     console.log("[SERVERS_GET_OBJECT_URL] ", error);
+    
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
