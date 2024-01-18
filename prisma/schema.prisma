@@ -23,6 +23,7 @@ model Profile {
   uploadedVideos UploadedVideo[]
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model UploadedVideo {
@@ -40,6 +41,9 @@ model UploadedVideo {
   transcodedVideos TranscodedVideo[]?
 
   uploadedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId])
 }
 
 model TranscodedVideo {
@@ -55,6 +59,9 @@ model TranscodedVideo {
   originalVideo UploadedVideo @relation(fields: [originalVideoId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([originalVideoId])
 }
 
 enum Resolution {
