@@ -13,3 +13,8 @@ export const fileTypeState = selector({
     return fileType;
   },
 });
+
+export const profileIdState = atom<string | null>({
+  key: "profileIdState",
+  default: null,
+});

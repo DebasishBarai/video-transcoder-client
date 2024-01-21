@@ -1,4 +1,3 @@
-import { Dropzone } from "@/components/dropzone";
 import { VideoUpload } from "@/components/video-upload";
 import { CurrentProfile } from "@/lib/current-profile";
 import { redirect } from "next/navigation";

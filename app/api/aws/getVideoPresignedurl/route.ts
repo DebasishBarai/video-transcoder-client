@@ -15,27 +15,6 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    
-    const video = (videoType === 'uploadedVideo') ?
-    await prisma.uploadedVideo.findUnique({
-        where: {
-            id: videoId,
-            profileId: profile.id
-        }
-    }) :
-    await prisma.transcodedVideo.findUnique({
-        where: {
-            id: videoId,
-            originalVideo: {
-                profileId: profile.id
-            }
-        }
-    })
-
-    if (!video) {
-        return new NextResponse("Unauthorised", { status: 401 });
-    }
-
     // @ts-ignore
     const client = new S3Client({
       region: process.env.AWS_REGION,
@@ -45,25 +24,56 @@ export async function POST(req: Request) {
       },
     });
 
-    const command = (videoType === 'uploadedVideo') ? 
-    new GetObjectCommand({
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `/users/${profile.id}/videos/${video.id}`,
-    }) :
-    new GetObjectCommand({
+    if (videoType === "uploadedVideo") {
+      const video = await prisma.uploadedVideo.findUnique({
+        where: {
+          id: videoId,
+          profileId: profile.id,
+        },
+      });
+
+      if (!video) {
+        return new NextResponse("Unauthorised", { status: 401 });
+      }
+
+      const command = new GetObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `/users/${profile.id}/videos/${video.originalVideo.id}/transcoded/${video.id}`,
-      })
+        Key: `/users/${profile.id}/videos/${video.id}.${video.fileType}`,
+      });
 
-    const url = await getSignedUrl(client, command, { expiresIn: 3600 });
+      const url = await getSignedUrl(client, command, { expiresIn: 3600 });
 
-    return NextResponse.json({
-      getObjectPreSignedUrl: url,
-    });
+      return NextResponse.json({
+        getObjectPreSignedUrl: url,
+      });
+    } else {
+      const video = await prisma.transcodedVideo.findUnique({
+        where: {
+          id: videoId,
+          originalVideo: {
+            profileId: profile.id,
+          },
+        },
+      });
 
+      if (!video) {
+        return new NextResponse("Unauthorised", { status: 401 });
+      }
+
+      const command = new GetObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `/users/${profile.id}/videos/${video.originalVideoId}/transcoded/${video.id}.${video.fileType}`,
+      });
+
+      const url = await getSignedUrl(client, command, { expiresIn: 3600 });
+
+      return NextResponse.json({
+        getObjectPreSignedUrl: url,
+      });
+    }
   } catch (error) {
     console.log("[SERVERS_GET_OBJECT_URL] ", error);
-    
+
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

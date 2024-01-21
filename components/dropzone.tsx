@@ -2,9 +2,9 @@
 
 import { prisma } from "@/lib/prisma";
 import { fileState, fileTypeState } from "@/store/store";
-import axios from "axios";
+import axios, { AxiosProgressEvent, AxiosRequestConfig } from "axios";
 import { UploadCloud } from "lucide-react";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
@@ -16,12 +16,17 @@ export const Dropzone = ({ profileId }: DropzoneProps) => {
   const [file, setFile] = useRecoilState(fileState);
   const fileType = useRecoilValue(fileTypeState);
 
-  const onDrop = async (files: any) => {
+  // const [uploading, setUploading] = useState(false);
+  // const [uploadProgress, setUploadProgress] = useState(0);
+  // const [uploadComplete, setUploadComplete] = useState(false);
+
+  const onDrop = async (files: File[]) => {
     setFile(files[0]);
 
     const videoRes = await axios.post("/api/createVideo", {
       title: "Video title",
       description: "video description",
+      fileType: `${fileType}`,
     });
 
     if (videoRes.status != 200) {
@@ -45,10 +50,18 @@ export const Dropzone = ({ profileId }: DropzoneProps) => {
     }
 
     //save file to S3
-    const options = {
+    const options: AxiosRequestConfig = {
       headers: {
         "Content-Type": fileType,
       },
+      // onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+      //   const percentUploaded = Math.round(
+      //     (progressEvent.loaded / progressEvent.total) * 100,
+      //   );
+      //
+      //   // console.log("create video route returned ", percentUploaded);
+      //   setUploadProgress(percentUploaded);
+      // },
     };
 
     await axios.put(res.data.putObjectPreSignedUrl, file, options);

@@ -6,7 +6,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export async function POST(req: Request) {
   try {
-    const { videoId, fileType } = await req.json()
+    const { videoId, fileType } = await req.json();
 
     const profile = await CurrentProfile();
 
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `/users/${profile.id}/videos/${videoId}`,
+      Key: `/users/${profile.id}/videos/${videoId}.${fileType}`,
       ContentType: `video/${fileType}`,
     });
 
@@ -34,10 +34,10 @@ export async function POST(req: Request) {
     return NextResponse.json({
       putObjectPreSignedUrl: url,
     });
-
   } catch (error) {
     console.log("[SERVERS_PUT_OBJECT_URL] ", error);
 
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
+

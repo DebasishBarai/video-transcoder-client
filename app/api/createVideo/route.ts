@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { title, description } = await req.json();
+    const { title, description, fileType } = await req.json();
 
     const profile = await CurrentProfile();
 
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       data: {
         title,
         description,
-        videoUrl: "",
+        fileType,
         profileId: profile.id,
         // Optionally provide values for other properties like transcodeFormats, transcodeResolutions, etc.
       },
