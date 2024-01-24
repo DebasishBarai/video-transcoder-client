@@ -23,7 +23,7 @@ export const Dropzone = ({ profileId }: DropzoneProps) => {
   const onDrop = async (files: File[]) => {
     setFile(files[0]);
 
-    const videoRes = await axios.post("/api/createVideo", {
+    const videoRes = await axios.post("/api/create-video", {
       title: "Video title",
       description: "video description",
       fileType: `${fileType}`,

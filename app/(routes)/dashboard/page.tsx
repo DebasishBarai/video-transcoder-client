@@ -1,4 +1,4 @@
-import { VideoUpload } from "@/components/video-upload";
+import { VideoUploadRecoil } from "@/components/video-upload-recoil";
 import { CurrentProfile } from "@/lib/current-profile";
 import { redirect } from "next/navigation";
 
@@ -11,7 +11,7 @@ const Dashboard = async () => {
 
   return (
     <div className="min-w-full min-h-screen flex flex-col justify-center items-center bg-slate-900 text-slate-100 text-2xl">
-      <VideoUpload profileId={profile.id} />
+      <VideoUploadRecoil profileId={profile.id} />
     </div>
   );
 };

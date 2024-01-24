@@ -1,16 +1,10 @@
 import { profileIdState } from "@/store/store";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Dropzone } from "../dropzone";
 import { Progress } from "../ui/progress";
 
-type UploadVideoProps = {
-  profileId: string;
-};
-
-export const UploadVideoDialog = ({ profileId }: UploadVideoProps) => {
-  const setProfileId = useSetRecoilState(profileIdState);
-
-  setProfileId(profileId);
+export const UploadVideoDialog = () => {
+  const profileId = useRecoilValue(profileIdState);
   return (
     <div>
       <div className="grid gap-4 py-4">
