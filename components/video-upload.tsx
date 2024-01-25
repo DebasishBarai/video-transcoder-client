@@ -18,7 +18,13 @@ import { useState } from "react";
 import { SetOptionsDialog } from "./video-upload-dialog-components/set-options-dialog";
 import { SetTitleDialog } from "./video-upload-dialog-components/set-title-dialog";
 import { UploadVideoDialog } from "./video-upload-dialog-components/upload-video-dialog";
-import { profileIdState, videoTitleState } from "@/store/store";
+import {
+  fileState,
+  profileIdState,
+  videoTitleState,
+  videoUploadingState,
+} from "@/store/store";
+import { useUploadVideo } from "./hooks/use-upload-video";
 
 type VideoUploadProps = {
   profileId: string;
@@ -29,9 +35,15 @@ export const VideoUpload = ({ profileId }: VideoUploadProps) => {
 
   setProfileId(profileId);
 
+  const file = useRecoilValue(fileState);
   const title = useRecoilValue(videoTitleState);
 
+  const uploading = useRecoilValue(videoUploadingState);
+
   const [pageNo, setPageNo] = useState(0);
+
+  const uploadVideo = useUploadVideo();
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -85,10 +97,15 @@ export const VideoUpload = ({ profileId }: VideoUploadProps) => {
             onClick={
               pageNo < 2
                 ? () => setPageNo((c) => c + 1)
-                : () => setPageNo((c) => c)
+                : async () => await uploadVideo()
             }
             variant={pageNo < 2 ? "default" : "premium"}
-            disabled={pageNo == 0 && title === "" ? true : false}
+            disabled={
+              (pageNo == 0 && title === "") ||
+              (pageNo == 2 && (!file || uploading))
+                ? true
+                : false
+            }
           >
             {pageNo < 2 ? "Next" : "Transcode"}
           </Button>

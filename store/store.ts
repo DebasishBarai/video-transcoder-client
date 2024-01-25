@@ -55,3 +55,14 @@ export const videoResolutionState = atom({
   key: "videoResolutionState",
   default: ["480p", "720p", "1080p"],
 });
+
+//Video upload status
+export const videoUploadingState = atom({
+  key: "videoUploadingState",
+  default: false,
+});
+
+export const videoUploadProgressState = atom({
+  key: "videoUploadProgressState",
+  default: 0,
+});

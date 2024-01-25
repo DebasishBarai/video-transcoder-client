@@ -4,7 +4,13 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { title, description, fileType } = await req.json();
+    const {
+      title,
+      description,
+      fileType,
+      transcodeFormats,
+      transcodeResolutions,
+    } = await req.json();
 
     const profile = await CurrentProfile();
 
@@ -19,7 +25,8 @@ export async function POST(req: Request) {
         description,
         fileType,
         profileId: profile.id,
-        // Optionally provide values for other properties like transcodeFormats, transcodeResolutions, etc.
+        // transcodeFormats,
+        // transcodeResolutions,
       },
     });
 
@@ -33,7 +40,7 @@ export async function POST(req: Request) {
       videoId: video.id,
     });
   } catch (error) {
-    console.log("[SERVERS_PUT_OBJECT_URL] ", error);
+    console.log("[SERVERS_CREATE_VIDEO_URL] ", error);
 
     return new NextResponse("Internal Error", { status: 500 });
   }
